@@ -4,9 +4,9 @@ import "dotenv/config";
 import { defineConfig, env } from 'prisma/config';
 
 export default defineConfig({
-  schema: 'restaurant-api/prisma/schema.prisma',
+  schema: 'prisma/schema/schema.prisma',
   migrations: {
-    path: 'restaurant-api/prisma/migrations',
+    path: 'prisma/migrations',
   },
   datasource: {
     url: env('RESTAURANT_DATABASE_URL'),
