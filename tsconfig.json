@@ -26,6 +26,6 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },
-  "include": ["platform-api/src/**/*.ts", "restaurant-api/src/**/*.ts", "prisma.config.ts"],
+  "include": ["platform-api/src/**/*.ts", "restaurant-api/src/**/*.ts", "platform-api/prisma.config.ts", "restaurant-api/prisma.config.ts"],
   "exclude": ["node_modules"]
 }
