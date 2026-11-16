@@ -1,0 +1,40 @@
+services:
+  platform-db:
+    image: postgres:17
+    container_name: platform-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${PLATFORM_DB_NAME}
+    ports:
+      - "${PLATFORM_DB_PORT}:5432"
+    volumes:
+      - platform_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${PLATFORM_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  restaurant-db:
+    image: postgres:17
+    container_name: restaurant-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${RESTAURANT_DB_NAME}
+    ports:
+      - "${RESTAURANT_DB_PORT}:5432"
+    volumes:
+      - restaurant_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${RESTAURANT_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  platform_data:
+  restaurant_data:

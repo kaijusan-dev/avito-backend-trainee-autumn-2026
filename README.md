@@ -17,3 +17,16 @@ npx prisma format --config restaurant-api/prisma.config.ts
 npx prisma validate --config platform-api/prisma.config.ts
 npx prisma validate --config restaurant-api/prisma.config.ts
 ```
+
+Запуск генерации клиента prisma для обоих сервисов:
+
+```bash
+npm run db:generate
+```
+
+Запуск миграции prisma для сервисов:
+
+```bash
+npm run db:migrate:platform -- --name название_миграции
+npm run db:migrate:restaurant -- --name название_миграции
+```
