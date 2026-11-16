@@ -13,7 +13,7 @@ const startApp = async () => {
       throw new Error('База данных недоступна');
     }
 
-    if (env.NODE_ENV === 'test') {
+    if (env.NODE_ENV !== 'test') {
       await seedDatabase();
     }
 

@@ -6,8 +6,6 @@ import { logger } from "../../../shared/src/config/logger.js";
 
 const connectionString = env.PLATFORM_DATABASE_URL;
 
-console.log('[prisma] connecting to:', env.PLATFORM_DATABASE_URL);
-
 const pool = new Pool({
   connectionString
 });

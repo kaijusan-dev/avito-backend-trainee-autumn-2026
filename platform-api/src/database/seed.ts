@@ -1,19 +1,60 @@
 import prisma from "./prisma.js";
 
 export const seedDatabase = async () => {
-    await prisma.orderItem.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.restaurant.deleteMany();
+    const existing = await prisma.restaurant.count();
 
-    const restaurant = await prisma.restaurant.create({
-        data: {
-            name: 'Пиццерия «Пермь»',
-            address: 'г. Пермь, ул. Ленина, 58',
-            isActive: true,
-        },
+    if (existing > 0) {
+        console.log(`Заполнение тестовыми данными пропущено, в БД уже ${existing} заведений`);
+        return;
+    }
+
+    await prisma.restaurant.createMany({
+        data: [
+            {
+                name: 'Пиццерия «Пермь»',
+                address: 'г. Пермь, ул. Ленина, 58',
+                isActive: true,
+            },
+            {
+                name: 'Суши-бар «Токио»',
+                address: 'г. Пермь, Комсомольский проспект, 32',
+                isActive: true,
+            },
+            {
+                name: 'Бургерная «Meat Point»',
+                address: 'г. Пермь, ул. Мира, 45',
+                isActive: true,
+            },
+            {
+                name: 'Кофейня «Black Brew»',
+                address: 'г. Пермь, ул. Сибирская, 15',
+                isActive: true,
+            },
+            {
+                name: 'Столовая «Домашняя»',
+                address: 'г. Пермь, ул. Гагарина, 70',
+                isActive: true,
+            },
+            {
+                name: 'Шаурма «У Ашота»',
+                address: 'г. Пермь, ул. Куйбышева, 22',
+                isActive: true,
+            },
+            {
+                name: 'Пельменная «Уральская»',
+                address: 'г. Пермь, ул. Пушкина, 100',
+                isActive: false, // закрыто
+            },
+        ],
     });
 
-    console.log(`Заполнение тестовыми данными выполнено. Заведение: ${restaurant.id}`);
+    const created = await prisma.restaurant.findMany({
+        select: { id: true, name: true, isActive: true },
+        orderBy: { name: 'asc' },
+    });
 
-    await prisma.$disconnect();
+    console.log(`Создано заведений: ${created.length}`);
+    for (const r of created) {
+        console.log(`  ${r.isActive ? '+' : '-'} ${r.name}  (${r.id})`);
+    }
 };
