@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev:platform": "chcp 65001 && tsx watch platform-api/src/server.ts",
+    "dev:restaurant": "chcp 65001 && tsx watch restaurant-api/src/server.ts",
     "build": "tsc",
     "start": "node build/index.js",
     "db:generate": "prisma generate --config platform-api/prisma.config.ts && prisma generate --config restaurant-api/prisma.config.ts",
@@ -46,9 +47,10 @@
     "@ts-rest/open-api": "3.52.1",
     "@types/express": "^4.17.21",
     "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
     "pg": "^8.22.0",
     "pino": "^10.4.0",
     "pino-http": "^11.0.0",
-    "zod": "3.25.76"
+    "zod": "^4.6.7"
   }
 }

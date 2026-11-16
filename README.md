@@ -24,9 +24,24 @@ npx prisma validate --config restaurant-api/prisma.config.ts
 npm run db:generate
 ```
 
-Запуск миграции prisma для сервисов:
+Создание миграции prisma для сервисов:
 
 ```bash
 npm run db:migrate:platform -- --name название_миграции
 npm run db:migrate:restaurant -- --name название_миграции
+```
+
+Тестирование:
+
+```bash
+npm run test
+```
+
+###Запустить проект локально:
+
+По одному (в разных окнах консоли):
+
+```bash
+npm run dev:platform
+npm run dev:restaurant
 ```
