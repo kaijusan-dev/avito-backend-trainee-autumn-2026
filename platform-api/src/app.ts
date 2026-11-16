@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import express, { type Request, type Response } from 'express';
 // import { apiContract } from './api.contract.js';
 import { restaurantsRouter } from './modules/restaurants/restaurants.routes.js';

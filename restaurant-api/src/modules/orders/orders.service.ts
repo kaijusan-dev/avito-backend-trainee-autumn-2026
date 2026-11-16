@@ -33,7 +33,7 @@ export const createOrderFromPlatform = async (data: CreatePlatformOrder) => {
                 'ProductNotFoundError',
                 `Товар ${item.productId} не найден`,
                 400,
-                'VALIDATION_ERROR',
+                'ITEM_NOT_FOUND',
             );
         }
 

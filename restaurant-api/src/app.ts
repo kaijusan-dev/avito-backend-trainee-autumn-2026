@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import express from 'express';
 import { restaurantRouter } from './modules/restaurant/restaurant.routes.js';
 import { menuRouter } from './modules/menu/menu.routes.js';

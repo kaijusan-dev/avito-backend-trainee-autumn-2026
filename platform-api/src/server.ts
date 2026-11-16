@@ -1,4 +1,3 @@
-import 'express-async-errors';
 import { env } from "../../shared/src/config/env.js";
 import { logger } from "../../shared/src/config/logger.js";
 import { app } from "./app.js";
@@ -14,7 +13,9 @@ const startApp = async () => {
       throw new Error('База данных недоступна');
     }
 
-    await seedDatabase();
+    if (env.NODE_ENV === 'test') {
+      await seedDatabase();
+    }
 
     const port = Number(env.PLATFORM_API_PORT) || 3000;
 

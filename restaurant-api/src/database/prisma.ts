@@ -4,13 +4,7 @@ import { Pool } from 'pg';
 import { env } from "../../../shared/src/config/env.js";
 import { logger } from "../../../shared/src/config/logger.js";
 
-// const connectionString = env.RESTAURANT_DATABASE_URL || (
-//   process.env.VITEST === 'true' 
-//     ? env.DATABASE_URL_TEST 
-//     : env.DATABASE_URL
-// );
-
-const connectionString = env.RESTAURANT_DATABASE_URL
+const connectionString = env.RESTAURANT_DATABASE_URL;
 
 const pool = new Pool({
   connectionString

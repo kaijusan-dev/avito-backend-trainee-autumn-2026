@@ -13,9 +13,6 @@ export const UpdateProductSchema = z.object({
     description: z.string().trim().max(1000).nullable().optional(),
     price: z.number().int().min(0).optional(),
     isAvailable: z.boolean().optional(),
-}).refine(
-    (data) => Object.keys(data).length > 0,
-    { message: 'Нужно передать хотя бы одно поле' },
-);
+}).refine((data) => Object.keys(data).length > 0, { message: 'Нужно передать хотя бы одно поле' });
 
 export type UpdateProduct = z.infer<typeof UpdateProductSchema>;

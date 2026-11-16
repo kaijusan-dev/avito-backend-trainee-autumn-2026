@@ -10,7 +10,7 @@ const envSchema = z.object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     PLATFORM_DATABASE_URL: z.string(),
     RESTAURANT_DATABASE_URL: z.string(),
-    RESTAURANT_SERVICE_URL: z.string().url().default('http://localhost:3001'),
+    RESTAURANT_SERVICE_URL: z.string().default('http://localhost:3001'),
 })
 
 const _env = envSchema.safeParse(process.env);

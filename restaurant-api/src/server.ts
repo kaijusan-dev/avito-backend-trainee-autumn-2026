@@ -1,4 +1,3 @@
-import 'express-async-errors';
 import app from './app.js';
 import { checkPrismaStatus } from './database/prisma.js';
 import { env } from '../../shared/src/config/env.js';
@@ -14,7 +13,9 @@ const startApp = async () => {
       throw new Error('База данных недоступна');
     }
 
-    await seedDatabase();
+    if (env.NODE_ENV === 'test') {
+      await seedDatabase();
+    }
 
     const port = Number(env.RESTAURANT_API_PORT) || 3001;
 
