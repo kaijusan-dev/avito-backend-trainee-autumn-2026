@@ -63,7 +63,11 @@ jobs:
         run: npm run db:migrate:test
 
       - name: Start Restaurant API
-        run: npm run start:restaurant &
+        run: |
+          npm run start:restaurant > restaurant.log 2>&1 &
+          echo $! > restaurant.pid
+          sleep 3
+          cat restaurant.log
 
       - name: Run ESLint
         run: npm run lint
