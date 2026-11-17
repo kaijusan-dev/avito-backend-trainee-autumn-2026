@@ -30,6 +30,5 @@
   "*-api/src/**/*.ts",
   "*-api/prisma.config.ts",
   "shared/src/**/*.ts",
-  ],
-  "exclude": ["node_modules"]
+  ]
 }
