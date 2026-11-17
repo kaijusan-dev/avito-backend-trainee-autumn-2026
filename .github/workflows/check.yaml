@@ -1,0 +1,75 @@
+name: Check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    name: Lint & Test & Build
+    runs-on: ubuntu-latest
+
+    env:
+      NODE_ENV: test
+      PLATFORM_DATABASE_URL: postgresql://postgres:postgres@localhost:2222/platform_db_test?schema=public
+      RESTAURANT_DATABASE_URL: postgresql://postgres:postgres@localhost:3333/restaurant_db_test?schema=public
+
+    services:
+      platform-postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: platform_db_test
+        ports:
+          - 2222:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d platform_db_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      restaurant-postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: restaurant_db_test
+        ports:
+          - 3333:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d restaurant_db_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Clients
+        run: npm run db:generate
+
+      - name: Prepare test databases
+        run: npm run db:migrate:test
+
+      - name: Start Restaurant API
+        run: npm run start:restaurant:test &
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build project
+        run: npm run build

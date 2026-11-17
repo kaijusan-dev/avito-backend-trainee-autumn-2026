@@ -1,0 +1,79 @@
+services:
+  platform-db:
+    image: postgres:17
+    container_name: platform-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${PLATFORM_DB_NAME}
+    ports:
+      - "${PLATFORM_DB_PORT}:5432"
+    volumes:
+      - platform_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${PLATFORM_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  restaurant-db:
+    image: postgres:17
+    container_name: restaurant-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${RESTAURANT_DB_NAME}
+    ports:
+      - "${RESTAURANT_DB_PORT}:5432"
+    volumes:
+      - restaurant_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${RESTAURANT_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  platform-api:
+    build:
+      context: .
+      dockerfile: platform-api/Dockerfile
+    container_name: platform-api
+    restart: unless-stopped
+    depends_on:
+      platform-db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PLATFORM_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@platform-db:5432/${PLATFORM_DB_NAME}?schema=public
+      RESTAURANT_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@restaurant-db:5432/${RESTAURANT_DB_NAME}?schema=public
+      RESTAURANT_SERVICE_URL: http://restaurant-api:3001
+    ports:
+      - "${PLATFORM_API_PORT}:3000"
+    command: >
+      sh -c "npx prisma migrate deploy --config prisma.config.ts && npx tsx src/server.ts"
+
+  restaurant-api:
+    build:
+      context: .
+      dockerfile: restaurant-api/Dockerfile
+    container_name: restaurant-api
+    restart: unless-stopped
+    depends_on:
+      restaurant-db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      RESTAURANT_API_PORT: 3001
+      RESTAURANT_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@restaurant-db:5432/${RESTAURANT_DB_NAME}?schema=public
+      PLATFORM_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@platform-db:5432/${PLATFORM_DB_NAME}?schema=public
+      RESTAURANT_SERVICE_URL: http://restaurant-api:3001
+    ports:
+      - "${RESTAURANT_API_PORT}:3001"
+    command: >
+      sh -c "npx prisma migrate deploy --config prisma.config.ts && npx tsx src/server.ts"
+
+volumes:
+  platform_data:
+  restaurant_data:

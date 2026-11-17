@@ -16,5 +16,13 @@ export default defineConfig({
     sequence: {
       concurrent: false,
     },
+    env: {
+      NODE_ENV: 'test',
+      PLATFORM_DATABASE_URL:
+          'postgresql://postgres:postgres@localhost:2222/platform_db_test?schema=public',
+      RESTAURANT_DATABASE_URL:
+          'postgresql://postgres:postgres@localhost:3333/restaurant_db_test?schema=public',
+      RESTAURANT_SERVICE_URL: 'http://localhost:3001',
+    },
   },
 });

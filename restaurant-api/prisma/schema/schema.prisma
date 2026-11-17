@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Restaurant {
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  categories Category[]
+  orders     Order[]
+
+  @@map("restaurants")
+}
+
+model Category {
+  id           String     @id @default(uuid())
+  name         String
+  restaurantId String     @map("restaurant_id")
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  products Product[]
+
+  @@unique([restaurantId, name])
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  categoryId  String   @map("category_id")
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  price       Int
+  isAvailable Boolean  @default(true) @map("is_available")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([categoryId, name])
+  @@map("products")
+}
+
+enum StatusType {
+  PENDING
+  CONFIRMED
+  REJECTED
+  PREPARING
+  READY_FOR_PICKUP
+  OUT_FOR_DELIVERY
+  COMPLETED
+}
+
+enum FulfillmentType {
+  DELIVERY
+  PICKUP
+}
+
+model Order {
+  id              String          @id @default(uuid())
+  restaurantId    String          @map("restaurant_id")
+  restaurant      Restaurant      @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  customerName    String          @map("customer_name")
+  customerPhone   String          @map("customer_phone")
+  deliveryAddress String?         @map("delivery_address")
+  fulfillmentType FulfillmentType @map("fulfillment_type")
+  status          StatusType      @default(PENDING)
+  totalPrice      Int             @map("total_price")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String @id @default(uuid())
+  orderId     String @map("order_id")
+  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String @map("product_id")
+  productName String @map("product_name")
+  unitPrice   Int    @map("unit_price")
+  quantity    Int
+
+  @@map("order_items")
+}
