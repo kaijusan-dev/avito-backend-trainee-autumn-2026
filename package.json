@@ -10,7 +10,7 @@
     "test:watch": "vitest",
     "test:platform": "vitest run platform-api",
     "test:restaurant": "vitest run restaurant-api",
-    "build": "tsc -p platform-api && tsc -p restaurant-api",
+    "build": "tsc",
     "start:platform": "node platform-api/build/platform-api/src/server.js",
     "start:restaurant": "node restaurant-api/build/restaurant-api/src/server.js",
     "db:generate": "prisma generate --config platform-api/prisma.config.ts && prisma generate --config restaurant-api/prisma.config.ts",
