@@ -78,13 +78,13 @@
 
 ### Пользовательские сценарии (CJM)
 
-- [Со стороны клиента](docs/cjm/customer.md)
-- [Со стороны заведения](docs/cjm/restaurant.md)
+- [Со стороны клиента](cjm/customer.md)
+- [Со стороны заведения](cjm/restaurant.md)
 
 ### Архитектура (C4)
 
-- [Уровень 1 - System Context](docs/architecture/c4-context.md)
-- [Уровень 2 - Container Diagram](docs/architecture/c4-container.md)
+- [Уровень 1 - System Context](architecture/c4-context.md)
+- [Уровень 2 - Container Diagram](architecture/c4-container.md)
 
 ### API
 
