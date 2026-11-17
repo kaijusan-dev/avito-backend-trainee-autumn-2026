@@ -16,8 +16,8 @@
     "db:generate": "prisma generate --config platform-api/prisma.config.ts && prisma generate --config restaurant-api/prisma.config.ts",
     "db:migrate:platform": "prisma migrate dev --config platform-api/prisma.config.ts",
     "db:migrate:restaurant": "prisma migrate dev --config restaurant-api/prisma.config.ts",
-    "db:migrate:test:platform": "cross-env PLATFORM_DATABASE_URL=postgresql://postgres:postgres@localhost:1111/platform_db_test?schema=public prisma migrate deploy --config platform-api/prisma.config.ts",
-    "db:migrate:test:restaurant": "cross-env RESTAURANT_DATABASE_URL=postgresql://postgres:postgres@localhost:1112/restaurant_db_test?schema=public prisma migrate deploy --config restaurant-api/prisma.config.ts",
+    "db:migrate:test:platform": "cross-env PLATFORM_DATABASE_URL=postgresql://postgres:postgres@localhost:2222/platform_db_test?schema=public prisma migrate deploy --config platform-api/prisma.config.ts",
+    "db:migrate:test:restaurant": "cross-env RESTAURANT_DATABASE_URL=postgresql://postgres:postgres@localhost:3333/restaurant_db_test?schema=public prisma migrate deploy --config restaurant-api/prisma.config.ts",
     "db:migrate:test": "npm run db:migrate:test:platform && npm run db:migrate:test:restaurant"
   },
   "repository": {

@@ -2,11 +2,10 @@ import 'dotenv/config'
 import { z } from 'zod';
 
 const envSchema = z.object({
-    PORT: z.coerce.number().int().positive().default(3000),
     PLATFORM_API_PORT: z.coerce.number().int().positive().default(3000),
     RESTAURANT_API_PORT: z.coerce.number().int().positive().default(3001),
-    PLATFORM_DB_PORT: z.coerce.number().int().positive().default(1111),
-    RESTAURANT_DB_PORT: z.coerce.number().int().positive().default(1112),
+    PLATFORM_DB_PORT: z.coerce.number().int().positive().default(2222),
+    RESTAURANT_DB_PORT: z.coerce.number().int().positive().default(3333),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     PLATFORM_DATABASE_URL: z.string(),
     RESTAURANT_DATABASE_URL: z.string(),

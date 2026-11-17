@@ -19,9 +19,9 @@ export default defineConfig({
     env: {
       NODE_ENV: 'test',
       PLATFORM_DATABASE_URL:
-          'postgresql://postgres:postgres@localhost:1111/platform_db_test?schema=public',
+          'postgresql://postgres:postgres@localhost:2222/platform_db_test?schema=public',
       RESTAURANT_DATABASE_URL:
-          'postgresql://postgres:postgres@localhost:1112/restaurant_db_test?schema=public',
+          'postgresql://postgres:postgres@localhost:3333/restaurant_db_test?schema=public',
       RESTAURANT_SERVICE_URL: 'http://restaurant-api-test:3001',
     },
   },

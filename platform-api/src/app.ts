@@ -6,6 +6,8 @@ import { httpLogger } from '../../shared/src/middleware/http-logger.middleware.j
 import { PathNotFoundError } from '../../shared/src/errors/http.errors.js';
 import { errorMiddleware } from '../../shared/src/middleware/error.middleware.js';
 import { setupDocs } from '../../shared/src/docs/openapi.js';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export const app = express();
 
@@ -20,7 +22,8 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/restaurants', restaurantsRouter);
 app.use('/orders', ordersRouter);
 
-setupDocs(app, 'platform-api/docs/openapi.yaml');
+const here = dirname(fileURLToPath(import.meta.url));
+setupDocs(app, resolve(here, '../docs/openapi.yaml'));
 
 // фикс бесконечного запроса иконки
 app.get('/favicon.ico', (_req, res) => res.status(204).end());
