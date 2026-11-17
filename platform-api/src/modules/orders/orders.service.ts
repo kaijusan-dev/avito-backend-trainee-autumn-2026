@@ -12,17 +12,19 @@ type RemoteProduct = {
 };
 
 async function requestRestaurant(
-    serviceUrl: string,
     path: string,
     init?: RequestInit,
 ) {
     let response: Response;
 
     try {
-        response = await fetch(new URL(path, serviceUrl), {
-            ...init,
-            signal: AbortSignal.timeout(5000),
-        });
+        response = await fetch(
+            new URL(path, env.RESTAURANT_SERVICE_URL),
+            {
+                ...init,
+                signal: AbortSignal.timeout(5000),
+            },
+        );
     } catch {
         throw new HttpError(
             'RestaurantServiceError',
@@ -50,7 +52,6 @@ export const createOrder = async (data: CreateOrder) => {
 
     // актуальные цены и наличие товаров.
     const lookupResponse = await requestRestaurant(
-        env.RESTAURANT_SERVICE_URL,
         '/products/lookup',
         {
             method: 'POST',
@@ -141,7 +142,7 @@ export const createOrder = async (data: CreateOrder) => {
     });
 
     // передача заказа заведению
-    await requestRestaurant(env.RESTAURANT_SERVICE_URL, '/orders', {
+    await requestRestaurant('/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -159,9 +160,10 @@ export const createOrder = async (data: CreateOrder) => {
             })),
         }),
     });
-
+    
     return order;
 };
+
 
 export const getOrderById = async (id: string) => {
     const order = await prisma.order.findUnique({
@@ -187,5 +189,17 @@ export const getOrderById = async (id: string) => {
         );
     }
 
-    return order;
+    // актуальный статус
+    const response = await requestRestaurant(
+        `/orders/${encodeURIComponent(id)}`,
+    );
+
+    const restaurantOrder = (await response.json()) as {
+        status: string;
+    };
+
+    return {
+        ...order,
+        status: restaurantOrder.status,
+    };
 };

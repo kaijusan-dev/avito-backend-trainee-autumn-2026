@@ -130,12 +130,7 @@ components:
         address: { type: string }
 
     Restaurant:
-      allOf:
-        - $ref: '#/components/schemas/RestaurantListItem'
-        - type: object
-          required: [serviceUrl]
-          properties:
-            serviceUrl: { type: string, format: uri }
+      $ref: '#/components/schemas/RestaurantListItem'
 
     Category:
       type: object

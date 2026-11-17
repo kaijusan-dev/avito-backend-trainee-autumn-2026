@@ -74,31 +74,71 @@ describe('endpoints /orders', () => {
         expect(response.body.code).toBe('VALIDATION_ERROR');
     });
 
-    test('GET /orders/:id', async () => {
-        const order = await prisma.order.create({
+    test('создание заказа и получение актуального статуса', async () => {
+        // доступные товары из Restaurant API
+        const menuResponse = await fetch(`${process.env.RESTAURANT_SERVICE_URL}/menu`);
+
+        expect(menuResponse.status).toBe(200);
+
+        const menu = await menuResponse.json() as never[];
+
+        const product = menu
+            .flatMap((category: { products: { id: string }[] }) => category.products)
+            .find((product: { id: string }) => product.id);
+
+        expect(product).toBeDefined();
+
+        // создать ресторан в Platform DB
+        const restaurant = await prisma.restaurant.create({
             data: {
-                restaurantId,
-                customerName: 'Иван',
-                customerPhone: '+79001234567',
-                fulfillmentType: 'PICKUP',
-                totalPrice: 90000,
-                items: {
-                    create: [{
-                        productId: randomUUID(),
-                        productName: 'Маргарита',
-                        unitPrice: 45000,
-                        quantity: 2,
-                    }],
-                },
+                name: 'Пиццерия',
+                address: 'Тестовый адрес',
+                isActive: true,
             },
         });
 
-        const response = await request(app)
-            .get(`/orders/${order.id}`)
+        // делаем заказ через Platform API
+        const createResponse = await request(app)
+            .post('/orders')
+            .send({
+                restaurantId: restaurant.id,
+                customerName: 'Иван',
+                customerPhone: '+79001234567',
+                fulfillmentType: 'PICKUP',
+                items: [
+                    {
+                        productId: product!.id,
+                        quantity: 2,
+                    },
+                ],
+            })
+            .expect(201);
+
+        const orderId = createResponse.body.id;
+
+        // изменить статус заказа через Restaurant API
+        const updateResponse = await fetch(
+            `${process.env.RESTAURANT_SERVICE_URL}/orders/${orderId}/status`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    status: 'PREPARING',
+                }),
+            },
+        );
+
+        expect(updateResponse.status).toBe(200);
+
+        // получение заказа через Platform API
+        const getResponse = await request(app)
+            .get(`/orders/${orderId}`)
             .expect(200);
 
-        expect(response.body.id).toBe(order.id);
-        expect(response.body.items).toHaveLength(1);
+        expect(getResponse.body.id).toBe(orderId);
+        expect(getResponse.body.status).toBe('PREPARING');
     });
 
     test('GET /orders/:id - не найдено', async () => {
