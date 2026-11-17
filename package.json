@@ -14,6 +14,7 @@
     "lint": "eslint .",
     "start:platform": "node build/platform-api/src/server.js",
     "start:restaurant": "node build/restaurant-api/src/server.js",
+    "start:restaurant:test": "tsx restaurant-api/src/server.ts",
     "db:generate": "prisma generate --config platform-api/prisma.config.ts && prisma generate --config restaurant-api/prisma.config.ts",
     "db:migrate:platform": "prisma migrate dev --config platform-api/prisma.config.ts",
     "db:migrate:restaurant": "prisma migrate dev --config restaurant-api/prisma.config.ts",
